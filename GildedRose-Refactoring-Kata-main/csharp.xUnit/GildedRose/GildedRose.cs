@@ -15,7 +15,7 @@ public class GildedRose
     {
         foreach (Item item in Items)
         {
-            if (item.Name == "Sulfuras, Hand of Ragnaros")
+            if (IsSulfuras(item.Name))
             {
                 continue;
             }
@@ -27,7 +27,8 @@ public class GildedRose
                     item.Quality = item.Quality - 1;
                 }
             }
-            else
+            
+            if (!IsNormalItem(item.Name))
             {
                 if (item.Quality < 50)
                 {
@@ -86,5 +87,10 @@ public class GildedRose
     private bool IsNormalItem(string itemName)
     {
         return itemName != "Aged Brie" && itemName != "Backstage passes to a TAFKAL80ETC concert" && itemName != "Sulfuras, Hand of Ragnaros";
+    }
+
+    private bool IsSulfuras(string itemName)
+    {
+        return itemName == "Sulfuras, Hand of Ragnaros";
     }
 }
