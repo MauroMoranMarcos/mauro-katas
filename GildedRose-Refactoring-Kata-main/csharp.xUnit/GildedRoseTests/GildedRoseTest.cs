@@ -16,6 +16,18 @@ public class GildedRoseTest
     }
 
     [Fact]
+    public void ItemQualityDegradesNormalPath()
+    {
+        IList<Item> Items = new List<Item>();
+        Items.Add(new Item { Name = "foo", SellIn = 5, Quality = 10 });
+
+        GildedRose app = new GildedRose(Items);
+        app.UpdateQuality();
+
+        Assert.Equal(9, Items[0].Quality);
+    }
+
+    [Fact]
     public void QualityDegradesTwiceAsFastSellDatePassed()
     {
         IList<Item> Items = new List<Item>();
@@ -124,5 +136,17 @@ public class GildedRoseTest
         app.UpdateQuality();
 
         Assert.Equal(0, Items[0].Quality);
+    }
+
+    [Fact]
+    public void ConjuredItemsDegradeQualityTwiceAsFast()
+    {
+        IList<Item> Items = new List<Item>();
+        Items.Add(new Item { Name = "Conjured Room", SellIn = 5, Quality = 10 });
+
+        GildedRose app = new GildedRose(Items);
+        app.UpdateQuality();
+
+        Assert.Equal(8, Items[0].Quality);
     }
 }
