@@ -28,6 +28,9 @@ When possible, the original repo will be referenced for each kata.
 |--------|------------|---------|
 | Theatrical Players Refactoring Kata | C# | ✅ Completed |
 
+### Theatrical PLayers Refactoring Kata
+Original repo: https://github.com/emilybache/Theatrical-Players-Refactoring-Kata
+
 ## Repo structure
 
 ```text
