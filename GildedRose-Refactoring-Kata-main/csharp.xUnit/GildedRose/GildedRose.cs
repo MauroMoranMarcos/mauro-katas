@@ -20,7 +20,7 @@ public class GildedRose
                 continue;
             }
 
-            if (item.Name != "Aged Brie" && item.Name != "Backstage passes to a TAFKAL80ETC concert")
+            if (IsNormalItem(item.Name))
             {
                 if (item.Quality > 0)
                 {
@@ -81,5 +81,10 @@ public class GildedRose
                 }
             }
         }
+    }
+
+    private bool IsNormalItem(string itemName)
+    {
+        return itemName != "Aged Brie" && itemName != "Backstage passes to a TAFKAL80ETC concert" && itemName != "Sulfuras, Hand of Ragnaros";
     }
 }
