@@ -52,7 +52,7 @@ public class GildedRose
                 continue;
             }
 
-            if (!IsNormalItem(item.Name))
+            if (IsAgedBrie(item.Name))
             {
                 if (item.Quality < 50)
                 {
@@ -73,6 +73,11 @@ public class GildedRose
     private bool IsSulfuras(string itemName)
     {
         return itemName == "Sulfuras, Hand of Ragnaros";
+    }
+
+    private bool IsAgedBrie(string itemName)
+    {
+        return itemName == "Aged Brie";
     }
 
     private void DecreaseSellIn(Item item)
