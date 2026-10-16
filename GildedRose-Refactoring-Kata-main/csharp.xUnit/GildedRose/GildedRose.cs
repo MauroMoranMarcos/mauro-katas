@@ -91,7 +91,7 @@ public class GildedRose
 
         if (item.SellIn < 0)
         {
-            if (item.Name == "Aged Brie")
+            if (IsAgedBrie(item.Name))
             {
                 if (item.Quality < 50)
                 {
@@ -101,7 +101,7 @@ public class GildedRose
                 return;
             }
 
-            if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
+            if (IsBackstagePass(item.Name))
             {
                 item.Quality = item.Quality - item.Quality;
                 return;
