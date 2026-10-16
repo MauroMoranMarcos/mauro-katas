@@ -31,7 +31,7 @@ public class GildedRose
                 continue;
             }
             
-            if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
+            if (IsBackstagePass(item.Name))
             {
                 if (item.Quality < 50)
                 {
@@ -78,6 +78,11 @@ public class GildedRose
     private bool IsAgedBrie(string itemName)
     {
         return itemName == "Aged Brie";
+    }
+
+    private bool IsBackstagePass(string itemName)
+    {
+        return itemName == "Backstage passes to a TAFKAL80ETC concert";
     }
 
     private void DecreaseSellIn(Item item)
