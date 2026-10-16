@@ -26,6 +26,9 @@ public class GildedRose
                 {
                     item.Quality = item.Quality - 1;
                 }
+
+                DecreaseSellIn(item);
+                continue;
             }
             
             if (!IsNormalItem(item.Name))
@@ -34,25 +37,29 @@ public class GildedRose
                 {
                     item.Quality = item.Quality + 1;
 
-                    if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
-                    {
-                        if (item.Quality < 50)
-                        {
-                            if (item.SellIn < 11)
-                            {
-                                item.Quality = item.Quality + 1;
-                            }
-
-                            if (item.SellIn < 6)
-                            {
-                                item.Quality = item.Quality + 1;
-                            }
-                        }
-                    }
                 }
+
+                DecreaseSellIn(item);
+                continue;
             }
 
-            DecreaseSellIn(item);
+            if (item.Name == "Backstage passes to a TAFKAL80ETC concert")
+            {
+                if (item.Quality < 50)
+                {
+                    if (item.SellIn < 11)
+                    {
+                        item.Quality = item.Quality + 1;
+                    }
+
+                    if (item.SellIn < 6)
+                    {
+                        item.Quality = item.Quality + 1;
+                    }
+                }
+
+                DecreaseSellIn(item);
+            }
         }
     }
 
