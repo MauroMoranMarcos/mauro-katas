@@ -26,10 +26,6 @@ public class GildedRose
                 {
                     item.Quality = item.Quality - 1;
                 }
-
-                DecreaseSellIn(item);
-                ModifyQualityAfterSellIn(item);
-                continue;
             }
             
             if (IsBackstagePass(item.Name))
@@ -48,10 +44,6 @@ public class GildedRose
                 {
                     item.Quality = item.Quality + 1;
                 }
-
-                DecreaseSellIn(item);
-                ModifyQualityAfterSellIn(item);
-                continue;
             }
 
             if (IsAgedBrie(item.Name))
@@ -60,11 +52,10 @@ public class GildedRose
                 {
                     item.Quality = item.Quality + 1;
                 }
-
-                DecreaseSellIn(item);
-                ModifyQualityAfterSellIn(item);
-                continue;
             }
+
+            DecreaseSellIn(item);
+            ModifyQualityAfterSellIn(item);
         }
     }
 
