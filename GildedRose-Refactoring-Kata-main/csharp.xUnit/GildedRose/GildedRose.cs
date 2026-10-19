@@ -146,7 +146,7 @@ public class GildedRose
 
         if (IsBackstagePass(item.Name))
         {
-            item.Quality = item.Quality - item.Quality;
+            item.Quality = 0;
         }
 
         if (IsConjured(item.Name) && item.Quality > 0)
