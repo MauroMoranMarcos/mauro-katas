@@ -22,40 +22,55 @@ public class GildedRose
 
             if (IsNormalItem(item.Name))
             {
-                if (item.Quality > 0)
-                {
-                    item.Quality = item.Quality - 1;
-                }
+                HandleNormalItemQuality(item);
             }
             
             if (IsBackstagePass(item.Name))
             {
-                if (item.Quality < 50)
-                {
-                    item.Quality = item.Quality + 1;  
-                }
-
-                if (item.Quality < 50 && item.SellIn < 11)
-                {
-                    item.Quality = item.Quality + 1;
-                }
-
-                if (item.Quality < 50 && item.SellIn < 6)
-                {
-                    item.Quality = item.Quality + 1;
-                }
+                HandleBackstagePassQuality(item);
             }
 
             if (IsAgedBrie(item.Name))
             {
-                if (item.Quality < 50)
-                {
-                    item.Quality = item.Quality + 1;
-                }
+                HandleAgedBrieQuality(item);
             }
 
             DecreaseSellIn(item);
             ModifyQualityAfterSellIn(item);
+        }
+    }
+
+    private void HandleNormalItemQuality(Item item)
+    {
+        if (item.Quality > 0)
+        {
+            item.Quality = item.Quality - 1;
+        }
+    }
+
+    private void HandleBackstagePassQuality(Item item)
+    {
+        if (item.Quality < 50)
+        {
+            item.Quality = item.Quality + 1;
+        }
+
+        if (item.Quality < 50 && item.SellIn < 11)
+        {
+            item.Quality = item.Quality + 1;
+        }
+
+        if (item.Quality < 50 && item.SellIn < 6)
+        {
+            item.Quality = item.Quality + 1;
+        }
+    }
+
+    private void HandleAgedBrieQuality(Item item)
+    {
+        if (item.Quality < 50)
+        {
+            item.Quality = item.Quality + 1;
         }
     }
 
