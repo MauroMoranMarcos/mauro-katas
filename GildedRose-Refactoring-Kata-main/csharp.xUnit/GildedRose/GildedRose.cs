@@ -94,15 +94,11 @@ public class GildedRose
         if (IsAgedBrie(item.Name) && item.Quality < 50)
         {
             item.Quality = item.Quality + 1;
-
-            return;
         }
 
         if (IsBackstagePass(item.Name))
         {
             item.Quality = item.Quality - item.Quality;
-
-            return;
         }
 
         if (IsNormalItem(item.Name) && item.Quality > 0)
