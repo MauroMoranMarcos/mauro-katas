@@ -35,6 +35,11 @@ public class GildedRose
                 HandleAgedBrieQuality(item);
             }
 
+            if (IsConjured(item.Name))
+            {
+                HandleConjuredItemQuality(item);
+            }
+
             DecreaseSellIn(item);
             ModifyQualityAfterSellIn(item);
         }
@@ -74,9 +79,23 @@ public class GildedRose
         }
     }
 
+    private void HandleConjuredItemQuality(Item item)
+    {
+        if (item.Quality > 0)
+        {
+            item.Quality = item.Quality - 2;
+
+            ClearInvalidQualityValue(item);
+
+            return;
+        }
+
+        item.Quality = 0;
+    }
+
     private bool IsNormalItem(string itemName)
     {
-        return itemName != "Aged Brie" && itemName != "Backstage passes to a TAFKAL80ETC concert" && itemName != "Sulfuras, Hand of Ragnaros";
+        return itemName != "Aged Brie" && itemName != "Backstage passes to a TAFKAL80ETC concert" && itemName != "Sulfuras, Hand of Ragnaros" && itemName != "Conjured Mana Cake";
     }
 
     private bool IsSulfuras(string itemName)
@@ -92,6 +111,11 @@ public class GildedRose
     private bool IsBackstagePass(string itemName)
     {
         return itemName == "Backstage passes to a TAFKAL80ETC concert";
+    }
+
+    private bool IsConjured(string itemName)
+    {
+        return itemName == "Conjured Mana Cake";
     }
 
     private void DecreaseSellIn(Item item)
@@ -116,9 +140,24 @@ public class GildedRose
             item.Quality = item.Quality - item.Quality;
         }
 
+        if (IsConjured(item.Name) && item.Quality > 0)
+        {
+            item.Quality = item.Quality - 2;
+        }
+
         if (IsNormalItem(item.Name) && item.Quality > 0)
         {
             item.Quality = item.Quality - 1;
+        }
+        
+        ClearInvalidQualityValue(item);
+    }
+
+    private void ClearInvalidQualityValue(Item item)
+    {
+        if (item.Quality < 0)
+        {
+            item.Quality = 0;
         }
     }
 }
