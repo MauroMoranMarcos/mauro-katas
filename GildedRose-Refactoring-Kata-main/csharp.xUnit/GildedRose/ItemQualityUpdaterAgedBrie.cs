@@ -2,6 +2,15 @@
 {
     public class ItemQualityUpdaterAgedBrie : IItemQualityUpdater
     {
+        private ItemQualityUpdaterAgedBrie()
+        {
+        }
+
+        public static ItemQualityUpdaterAgedBrie CreateNew()
+        {
+            return new ItemQualityUpdaterAgedBrie();
+        }
+
         public void ModifyQualityBeforeSellIn(Item item)
         {
             if (item.Quality < 50)

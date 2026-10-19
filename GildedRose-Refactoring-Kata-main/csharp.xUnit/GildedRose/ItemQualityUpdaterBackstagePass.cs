@@ -2,6 +2,15 @@
 {
     public class ItemQualityUpdaterBackstagePass : IItemQualityUpdater
     {
+        private ItemQualityUpdaterBackstagePass()
+        {
+        }
+
+        public static ItemQualityUpdaterBackstagePass CreateNew()
+        {
+            return new ItemQualityUpdaterBackstagePass();
+        }
+
         public void ModifyQualityBeforeSellIn(Item item)
         {
             if (item.Quality >= 50)

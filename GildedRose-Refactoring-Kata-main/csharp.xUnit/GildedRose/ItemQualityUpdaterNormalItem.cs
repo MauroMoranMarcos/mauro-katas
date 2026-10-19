@@ -2,6 +2,15 @@
 {
     public class ItemQualityUpdaterNormalItem : IItemQualityUpdater
     {
+        private ItemQualityUpdaterNormalItem()
+        {
+        }
+
+        public static ItemQualityUpdaterNormalItem CreateNew()
+        {
+            return new ItemQualityUpdaterNormalItem();
+        }
+
         public void ModifyQualityBeforeSellIn(Item item)
         {
             if (item.Quality > 0)
