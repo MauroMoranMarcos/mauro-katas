@@ -142,11 +142,23 @@ public class GildedRoseTest
     public void ConjuredItemsDegradeQualityTwiceAsFast()
     {
         IList<Item> Items = new List<Item>();
-        Items.Add(new Item { Name = "Conjured Room", SellIn = 5, Quality = 10 });
+        Items.Add(new Item { Name = "Conjured Mana Cake", SellIn = 5, Quality = 10 });
 
         GildedRose app = new GildedRose(Items);
         app.UpdateQuality();
 
         Assert.Equal(8, Items[0].Quality);
+    }
+
+    [Fact]
+    public void ConjuredItemsDegradeQualityTwiceAsFastAfterSellin()
+    {
+        IList<Item> Items = new List<Item>();
+        Items.Add(new Item { Name = "Conjured Mana Cake", SellIn = -1, Quality = 10 });
+
+        GildedRose app = new GildedRose(Items);
+        app.UpdateQuality();
+
+        Assert.Equal(6, Items[0].Quality);
     }
 }
