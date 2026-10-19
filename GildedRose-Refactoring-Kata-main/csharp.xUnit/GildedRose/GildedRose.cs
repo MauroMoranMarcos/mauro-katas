@@ -28,6 +28,7 @@ public class GildedRose
                 }
 
                 DecreaseSellIn(item);
+                ModifyQualityAfterSellIn(item);
                 continue;
             }
             
@@ -49,6 +50,7 @@ public class GildedRose
                 }
 
                 DecreaseSellIn(item);
+                ModifyQualityAfterSellIn(item);
                 continue;
             }
 
@@ -60,6 +62,7 @@ public class GildedRose
                 }
 
                 DecreaseSellIn(item);
+                ModifyQualityAfterSellIn(item);
                 continue;
             }
         }
@@ -88,29 +91,32 @@ public class GildedRose
     private void DecreaseSellIn(Item item)
     {
         item.SellIn = item.SellIn - 1;
+    }
 
-        if (item.SellIn < 0)
+    private void ModifyQualityAfterSellIn(Item item)
+    {
+        if (item.SellIn >= 0)
         {
-            if (IsAgedBrie(item.Name))
-            {
-                if (item.Quality < 50)
-                {
-                    item.Quality = item.Quality + 1;
-                }
+            return;
+        }
 
-                return;
-            }
+        if (IsAgedBrie(item.Name) && item.Quality < 50)
+        {
+            item.Quality = item.Quality + 1;
 
-            if (IsBackstagePass(item.Name))
-            {
-                item.Quality = item.Quality - item.Quality;
-                return;
-            }
+            return;
+        }
 
-            if (item.Quality > 0)
-            {
-                item.Quality = item.Quality - 1;
-            }
+        if (IsBackstagePass(item.Name))
+        {
+            item.Quality = item.Quality - item.Quality;
+
+            return;
+        }
+
+        if (IsNormalItem(item.Name) && item.Quality > 0)
+        {
+            item.Quality = item.Quality - 1;
         }
     }
 }
