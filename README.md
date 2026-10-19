@@ -27,7 +27,7 @@ When possible, the original repo will be referenced for each kata.
 | Kata | Language | Status |
 |--------|------------|---------|
 | Theatrical Players Refactoring Kata | C# | ✅ Completed |
-| Gilded Rose Refactoring Kata | C# | ⏳ In Progress |
+| Gilded Rose Refactoring Kata | C# | ✅ Completed |
 
 ### Theatrical Players Refactoring Kata
 Original repo: https://github.com/emilybache/Theatrical-Players-Refactoring-Kata
