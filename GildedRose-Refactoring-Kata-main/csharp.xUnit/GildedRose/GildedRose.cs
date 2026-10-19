@@ -23,6 +23,7 @@ public class GildedRose
             ModifyQualityBeforeSellIn(item);
             DecreaseSellIn(item);
             ModifyQualityAfterSellIn(item);
+            ClearInvalidQualityValue(item);
         }
     }
 
@@ -76,8 +77,6 @@ public class GildedRose
         {
             item.Quality = item.Quality + 1;
         }
-
-        ClearInvalidQualityValue(item);
     }
 
     private void HandleAgedBrieQuality(Item item)
@@ -93,8 +92,6 @@ public class GildedRose
         if (item.Quality > 0)
         {
             item.Quality = item.Quality - 2;
-
-            ClearInvalidQualityValue(item);
 
             return;
         }
@@ -157,9 +154,7 @@ public class GildedRose
         if (IsNormalItem(item.Name) && item.Quality > 0)
         {
             item.Quality = item.Quality - 1;
-        }
-        
-        ClearInvalidQualityValue(item);
+        }    
     }
 
     private void ClearInvalidQualityValue(Item item)
