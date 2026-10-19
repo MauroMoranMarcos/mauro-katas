@@ -20,28 +20,32 @@ public class GildedRose
                 continue;
             }
 
-            if (IsNormalItem(item.Name))
-            {
-                HandleNormalItemQuality(item);
-            }
-            
-            if (IsBackstagePass(item.Name))
-            {
-                HandleBackstagePassQuality(item);
-            }
-
-            if (IsAgedBrie(item.Name))
-            {
-                HandleAgedBrieQuality(item);
-            }
-
-            if (IsConjured(item.Name))
-            {
-                HandleConjuredItemQuality(item);
-            }
-
+            ModifyQualityBeforeSellIn(item);
             DecreaseSellIn(item);
             ModifyQualityAfterSellIn(item);
+        }
+    }
+
+    private void ModifyQualityBeforeSellIn(Item item)
+    {
+        if (IsNormalItem(item.Name))
+        {
+            HandleNormalItemQuality(item);
+        }
+
+        if (IsBackstagePass(item.Name))
+        {
+            HandleBackstagePassQuality(item);
+        }
+
+        if (IsAgedBrie(item.Name))
+        {
+            HandleAgedBrieQuality(item);
+        }
+
+        if (IsConjured(item.Name))
+        {
+            HandleConjuredItemQuality(item);
         }
     }
 
