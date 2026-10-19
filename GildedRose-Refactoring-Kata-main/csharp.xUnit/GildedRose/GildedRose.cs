@@ -59,20 +59,25 @@ public class GildedRose
 
     private void HandleBackstagePassQuality(Item item)
     {
-        if (item.Quality < 50)
+        if (item.Quality >= 50)
+        {
+            return;
+        }
+
+        if (item.SellIn < 6)
+        {
+            item.Quality = item.Quality + 3;
+        } 
+        else if (item.SellIn < 11)
+        {
+            item.Quality = item.Quality + 2;
+        } 
+        else
         {
             item.Quality = item.Quality + 1;
         }
 
-        if (item.Quality < 50 && item.SellIn < 11)
-        {
-            item.Quality = item.Quality + 1;
-        }
-
-        if (item.Quality < 50 && item.SellIn < 6)
-        {
-            item.Quality = item.Quality + 1;
-        }
+        ClearInvalidQualityValue(item);
     }
 
     private void HandleAgedBrieQuality(Item item)
@@ -162,6 +167,11 @@ public class GildedRose
         if (item.Quality < 0)
         {
             item.Quality = 0;
+        }
+
+        if (item.Quality > 50)
+        {
+            item.Quality = 50;
         }
     }
 }
