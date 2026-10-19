@@ -29,6 +29,7 @@ When possible, the original repo will be referenced for each kata.
 | Theatrical Players Refactoring Kata | C# | ✅ Completed |
 | Gilded Rose Refactoring Kata | C# | ✅ Completed |
 | Tennis Refactoring Kata | Java | ⏳ In Progress |
+| SupermarketReceipt Refactoring Kata | TypeScript | ⏳ In Progress |
 
 ### Theatrical Players Refactoring Kata
 Original repo: https://github.com/emilybache/Theatrical-Players-Refactoring-Kata
@@ -38,6 +39,9 @@ Original repo: https://github.com/emilybache/GildedRose-Refactoring-Kata
 
 ### Tennis Refactoring Kata
 Original repo: https://github.com/emilybache/tennis-refactoring-kata
+
+### SupermarketReceipt Refactoring Kata
+Original repo: https://github.com/emilybache/SupermarketReceipt-Refactoring-Kata
 
 ## Repo structure
 
@@ -49,4 +53,6 @@ mauro-coding-katas/
 │   └── csharp/
 ├── Tennis-Refactoring-Kata/
 │   └── java/
+├── SupermarketReceipt-Refactoring-Kata/
+│   └── typescript/
 └── README.md
