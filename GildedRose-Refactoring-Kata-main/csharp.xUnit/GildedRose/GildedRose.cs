@@ -92,11 +92,7 @@ public class GildedRose
         if (item.Quality > 0)
         {
             item.Quality = item.Quality - 2;
-
-            return;
         }
-
-        item.Quality = 0;
     }
 
     private bool IsNormalItem(string itemName)
