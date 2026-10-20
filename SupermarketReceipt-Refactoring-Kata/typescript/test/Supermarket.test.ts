@@ -7,9 +7,11 @@ import {Teller} from "../src/model/Teller"
 import {SpecialOfferType} from "../src/model/SpecialOfferType"
 import {ProductUnit} from "../src/model/ProductUnit"
 import {assert} from "chai";
+import { it } from "node:test"
+import { describe } from "node:test"
 
-describe('Supermarket', () => {
-    it('Ten percent discount', () => {
+describe('Supermarket individual discounts', () => {
+    it('Ten percent discount each', () => {
         // ARRANGE
         const catalog: SupermarketCatalog = new FakeCatalog();
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
@@ -36,4 +38,90 @@ describe('Supermarket', () => {
         assert.approximately(receiptItem.totalPrice, 2.5*1.99, 0.01);
         assert.equal(receiptItem.quantity, 2.5);
     });
+
+    it('Buy two, get one free', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const bananas: Product = new Product("bananas", ProductUnit.Kilo);
+        catalog.addProduct(bananas, 2.99);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 3);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        assert.approximately(receipt.getTotalPrice(), 1.98, 0.01);
+        assert.isNotEmpty(receipt.getDiscounts());
+        assert.equal(receipt.getItems().length, 1);
+        const receiptItem = receipt.getItems()[0];
+        assert.equal(receiptItem.product, toothbrush);
+        assert.equal(receiptItem.price, 0.99);
+        assert.approximately(receiptItem.totalPrice, 3*0.99, 0.01);
+        assert.equal(receiptItem.quantity, 3);
+    });
+
+    it('Two for amount', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const yogourt: Product = new Product("yogourt", ProductUnit.Each);
+        catalog.addProduct(yogourt, 0.50);
+        const avocados: Product = new Product("avocados", ProductUnit.Kilo);
+        catalog.addProduct(avocados, 4.99);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addSpecialOffer(SpecialOfferType.TwoForAmount, yogourt, 0.75);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(yogourt, 2);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        assert.approximately(receipt.getTotalPrice(), 0.75, 0.01);
+        assert.isNotEmpty(receipt.getDiscounts());
+        assert.equal(receipt.getItems().length, 1);
+        const receiptItem = receipt.getItems()[0];
+        assert.equal(receiptItem.product, yogourt);
+        assert.equal(receiptItem.price, 0.50);
+        assert.approximately(receiptItem.totalPrice, 2*0.50, 0.01);
+        assert.equal(receiptItem.quantity, 2);
+    });
+
+    it('Five for amount', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const cookie: Product = new Product("cookie", ProductUnit.Each);
+        catalog.addProduct(cookie, 0.89);
+        const potatoes: Product = new Product("potatoes", ProductUnit.Kilo);
+        catalog.addProduct(potatoes, 1.99);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(cookie, 5);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        assert.approximately(receipt.getTotalPrice(), 3.00, 0.01);
+        assert.isNotEmpty(receipt.getDiscounts());
+        assert.equal(receipt.getItems().length, 1);
+        const receiptItem = receipt.getItems()[0];
+        assert.equal(receiptItem.product, cookie);
+        assert.equal(receiptItem.price, 0.89);
+        assert.approximately(receiptItem.totalPrice, 5*0.89, 0.01);
+        assert.equal(receiptItem.quantity, 5);
+    });
 });
+
+
