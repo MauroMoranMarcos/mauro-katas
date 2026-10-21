@@ -59,28 +59,19 @@ export class ShoppingCart {
             let discount : Discount|null = null;
 
             if (offer.offerType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2) {
-                const totalProducts = 3;
-                const numberOfXs = Math.floor(quantityAsInt / totalProducts);
-                const discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantityAsInt % totalProducts * unitPrice);
-                discount = new Discount(product, "3 for 2", discountAmount);
+                discount = this.createThreeForTwoOffer(product, quantityAsInt, unitPrice);
             } 
             
             if (offer.offerType == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
-                const totalProducts = 2;
-                const total = offer.argument * Math.floor(quantityAsInt / totalProducts) + quantityAsInt % totalProducts * unitPrice;
-                const discountN = unitPrice * quantity - total;
-                discount = new Discount(product, "2 for " + offer.argument, discountN);
+                discount = this.createXForAmountOffer(product, 2, quantityAsInt, unitPrice, offer.argument);
             } 
             
             if (offer.offerType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                const totalProducts = 5;
-                const numberOfXs = Math.floor(quantityAsInt / totalProducts);
-                const discountTotal = unitPrice * quantity - (offer.argument * numberOfXs + quantityAsInt % totalProducts * unitPrice);
-                discount = new Discount(product, totalProducts + " for " + offer.argument, discountTotal);
+                discount = this.createXForAmountOffer(product, 5, quantityAsInt, unitPrice, offer.argument);
             }
 
             if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
-                discount = new Discount(product, offer.argument + "% off", quantity * unitPrice * offer.argument / 100.0);
+                discount = this.createTenPercentDiscount(product, quantityAsInt, unitPrice, offer.argument)
             }
 
             if (discount != null)
@@ -96,5 +87,23 @@ export class ShoppingCart {
 
     private productHasOffer(productName: string, offers: OffersByProduct): boolean {
         return offers[productName] !== undefined;
+    }
+
+    private createThreeForTwoOffer(product: Product, quantity: number, unitPrice: number): Discount {
+        const totalProducts = 3;
+        const numberOfXs = Math.floor(quantity / totalProducts);
+        const discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantity % totalProducts * unitPrice);
+        return new Discount(product, "3 for 2", discountAmount);
+    }
+
+    private createXForAmountOffer(product: Product, totalProducts: number, quantity: number, unitPrice: number, offerArgument: number): Discount {
+        const numberOfXs = Math.floor(quantity / totalProducts);
+        const discountTotal = unitPrice * quantity - (offerArgument * numberOfXs + quantity % totalProducts * unitPrice);
+        return new Discount(product, totalProducts + " for " + offerArgument, discountTotal);
+    }
+
+    private createTenPercentDiscount(product: Product, quantity: number, unitPrice: number, offerArgument: number): Discount {
+        const discountAmount = quantity * unitPrice * offerArgument / 100.0;
+        return new Discount(product, offerArgument + "% off", discountAmount);
     }
 }
