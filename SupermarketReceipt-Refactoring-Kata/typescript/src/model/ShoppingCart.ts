@@ -46,11 +46,9 @@ export class ShoppingCart {
     }
 
     handleOffers(receipt: Receipt,  offers: OffersByProduct, catalog: SupermarketCatalog ):void {
-        for (const productName in this.productQuantities()) {
-            if (!this.productHasOffer(productName, offers))
-            {
-                continue;
-            }
+        let productsWithOffers = this.getProductsWithOffers(offers);
+        
+        for (const productName of productsWithOffers) {
 
             const productQuantity = this._productQuantities[productName]
             const product = productQuantity.product;
@@ -98,6 +96,10 @@ export class ShoppingCart {
                 receipt.addDiscount(discount);
             }
         }
+    }
+
+    private getProductsWithOffers(offers: OffersByProduct): string[] {
+        return Object.keys(this.productQuantities()).filter((productName) => this.productHasOffer(productName, offers));
     }
 
     private productHasOffer(productName: string, offers: OffersByProduct): boolean {
