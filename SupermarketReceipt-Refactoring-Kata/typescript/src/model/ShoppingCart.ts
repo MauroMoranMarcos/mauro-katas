@@ -1,20 +1,19 @@
-import {Product} from "./Product"
-import {SupermarketCatalog} from "./SupermarketCatalog"
+import { Product } from "./Product"
+import { SupermarketCatalog } from "./SupermarketCatalog"
 import * as _ from "lodash"
-import {ProductQuantity} from "./ProductQuantity"
-import {Discount} from "./Discount"
-import {Receipt} from "./Receipt"
-import {Offer} from "./Offer"
-import {SpecialOfferType} from "./SpecialOfferType"
+import { ProductQuantity } from "./ProductQuantity"
+import { Discount } from "./Discount"
+import { Receipt } from "./Receipt"
+import { Offer } from "./Offer"
+import { SpecialOfferType } from "./SpecialOfferType"
 
 type ProductQuantities = { [productName: string]: ProductQuantity }
-export type OffersByProduct = {[productName: string]: Offer};
+export type OffersByProduct = { [productName: string]: Offer };
 
 export class ShoppingCart {
 
-    private readonly  items: ProductQuantity[] = [];
+    private readonly items: ProductQuantity[] = [];
     _productQuantities: ProductQuantities = {};
-
 
     getItems(): ProductQuantity[] {
         return _.clone(this.items);
@@ -28,7 +27,6 @@ export class ShoppingCart {
         return this._productQuantities;
     }
 
-
     public addItemQuantity(product: Product, quantity: number): void {
         let productQuantity = new ProductQuantity(product, quantity)
         this.items.push(productQuantity);
@@ -38,33 +36,31 @@ export class ShoppingCart {
         } else {
             this._productQuantities[product.name] = productQuantity;
         }
-
     }
 
     private increaseQuantity(product: Product, productQuantity: ProductQuantity, quantity: number) {
         return new ProductQuantity(product, productQuantity.quantity + quantity)
     }
 
-    handleOffers(receipt: Receipt,  offers: OffersByProduct, catalog: SupermarketCatalog ):void {
+    handleOffers(receipt: Receipt, offers: OffersByProduct, catalog: SupermarketCatalog): void {
         let productsWithOffers = this.getProductsWithOffers(offers);
-        
-        for (const productName of productsWithOffers) {
 
+        for (const productName of productsWithOffers) {
             const productQuantity = this._productQuantities[productName]
             const product = productQuantity.product;
             const quantity: number = productQuantity.quantity;
-            const offer : Offer = offers[productName];
-            const unitPrice: number= catalog.getUnitPrice(product);
-            let discount : Discount|null = null;
+            const offer: Offer = offers[productName];
+            const unitPrice: number = catalog.getUnitPrice(product);
+            let discount: Discount | null = null;
 
             if (offer.offerType == SpecialOfferType.ThreeForTwo && quantity > 2) {
                 discount = this.createThreeForTwoOffer(product, quantity, unitPrice);
-            } 
-            
+            }
+
             if (offer.offerType == SpecialOfferType.TwoForAmount && quantity >= 2) {
                 discount = this.createXForAmountOffer(product, 2, quantity, unitPrice, offer.argument);
-            } 
-            
+            }
+
             if (offer.offerType == SpecialOfferType.FiveForAmount && quantity >= 5) {
                 discount = this.createXForAmountOffer(product, 5, quantity, unitPrice, offer.argument);
             }
@@ -73,8 +69,7 @@ export class ShoppingCart {
                 discount = this.createTenPercentDiscount(product, quantity, unitPrice, offer.argument)
             }
 
-            if (discount != null)
-            {
+            if (discount != null) {
                 receipt.addDiscount(discount);
             }
         }
