@@ -19,16 +19,19 @@ export class Teller {
     public checksOutArticlesFrom(theCart: ShoppingCart): Receipt {
         const receipt = new Receipt();
         const productQuantities = theCart.getItems();
-        for (let pq of productQuantities) {
-            let p = pq.product;
-            let quantity = pq.quantity;
-            let unitPrice = this.catalog.getUnitPrice(p);
-            let price = quantity * unitPrice;
-            receipt.addProduct(p, quantity, unitPrice, price);
-        }
+        this.addProductsToReceipt(receipt, productQuantities);
         theCart.handleOffers(receipt, this.offers, this.catalog);
 
         return receipt;
     }
 
+    private addProductsToReceipt(receipt: Receipt, productQuantities: { product: Product, quantity: number }[]): void {
+        productQuantities.forEach(productQuantity => {
+            let product: Product = productQuantity.product;
+            let quantity: number = productQuantity.quantity;
+            let unitPrice: number = this.catalog.getUnitPrice(product);
+            let price: number = quantity * unitPrice;
+            receipt.addProduct(product, quantity, unitPrice, price);
+        })
+    }
 }
