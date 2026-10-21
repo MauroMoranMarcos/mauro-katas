@@ -55,23 +55,22 @@ export class ShoppingCart {
             const quantity: number = productQuantity.quantity;
             const offer : Offer = offers[productName];
             const unitPrice: number= catalog.getUnitPrice(product);
-            let quantityAsInt = quantity;
             let discount : Discount|null = null;
 
-            if (offer.offerType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2) {
-                discount = this.createThreeForTwoOffer(product, quantityAsInt, unitPrice);
+            if (offer.offerType == SpecialOfferType.ThreeForTwo && quantity > 2) {
+                discount = this.createThreeForTwoOffer(product, quantity, unitPrice);
             } 
             
-            if (offer.offerType == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
-                discount = this.createXForAmountOffer(product, 2, quantityAsInt, unitPrice, offer.argument);
+            if (offer.offerType == SpecialOfferType.TwoForAmount && quantity >= 2) {
+                discount = this.createXForAmountOffer(product, 2, quantity, unitPrice, offer.argument);
             } 
             
-            if (offer.offerType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                discount = this.createXForAmountOffer(product, 5, quantityAsInt, unitPrice, offer.argument);
+            if (offer.offerType == SpecialOfferType.FiveForAmount && quantity >= 5) {
+                discount = this.createXForAmountOffer(product, 5, quantity, unitPrice, offer.argument);
             }
 
             if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
-                discount = this.createTenPercentDiscount(product, quantityAsInt, unitPrice, offer.argument)
+                discount = this.createTenPercentDiscount(product, quantity, unitPrice, offer.argument)
             }
 
             if (discount != null)
