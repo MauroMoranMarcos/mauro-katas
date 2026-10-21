@@ -57,27 +57,26 @@ export class ShoppingCart {
             const unitPrice: number= catalog.getUnitPrice(product);
             let quantityAsInt = quantity;
             let discount : Discount|null = null;
-            let x = 1;
 
             if (offer.offerType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2) {
-                x = 3;
-                const numberOfXs = Math.floor(quantityAsInt / x);
-                const discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantityAsInt % 3 * unitPrice);
+                const totalProducts = 3;
+                const numberOfXs = Math.floor(quantityAsInt / totalProducts);
+                const discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantityAsInt % totalProducts * unitPrice);
                 discount = new Discount(product, "3 for 2", discountAmount);
             } 
             
             if (offer.offerType == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
-                x = 2;
-                const total = offer.argument * Math.floor(quantityAsInt / x) + quantityAsInt % 2 * unitPrice;
+                const totalProducts = 2;
+                const total = offer.argument * Math.floor(quantityAsInt / totalProducts) + quantityAsInt % totalProducts * unitPrice;
                 const discountN = unitPrice * quantity - total;
                 discount = new Discount(product, "2 for " + offer.argument, discountN);
             } 
-
+            
             if (offer.offerType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                x = 5;
-                const numberOfXs = Math.floor(quantityAsInt / x);
-                const discountTotal = unitPrice * quantity - (offer.argument * numberOfXs + quantityAsInt % 5 * unitPrice);
-                discount = new Discount(product, x + " for " + offer.argument, discountTotal);
+                const totalProducts = 5;
+                const numberOfXs = Math.floor(quantityAsInt / totalProducts);
+                const discountTotal = unitPrice * quantity - (offer.argument * numberOfXs + quantityAsInt % totalProducts * unitPrice);
+                discount = new Discount(product, totalProducts + " for " + offer.argument, discountTotal);
             }
 
             if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
