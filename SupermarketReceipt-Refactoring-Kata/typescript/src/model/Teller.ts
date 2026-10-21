@@ -27,11 +27,19 @@ export class Teller {
 
     private addProductsToReceipt(receipt: Receipt, productQuantities: { product: Product, quantity: number }[]): void {
         productQuantities.forEach(productQuantity => {
-            let product: Product = productQuantity.product;
-            let quantity: number = productQuantity.quantity;
-            let unitPrice: number = this.catalog.getUnitPrice(product);
-            let price: number = quantity * unitPrice;
-            receipt.addProduct(product, quantity, unitPrice, price);
+            this.addProductToReceipt(receipt, productQuantity);
         })
+    }
+
+    private calculateProductPrice(unitPrice: number, quantity: number): number {
+        return quantity * unitPrice;
+    }
+
+    private addProductToReceipt(receipt: Receipt, productQuantity: { product: Product, quantity: number }): void {
+        let product: Product = productQuantity.product;
+        let quantity: number = productQuantity.quantity;
+        let unitPrice: number = this.catalog.getUnitPrice(product);
+        let price: number = this.calculateProductPrice(unitPrice, quantity);
+        receipt.addProduct(product, quantity, unitPrice, price);
     }
 }
