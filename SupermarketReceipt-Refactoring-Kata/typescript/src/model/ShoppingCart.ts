@@ -27,14 +27,18 @@ export class ShoppingCart {
         return this._productQuantities;
     }
 
+    setProductQuantity(productName: string, productQuantity: ProductQuantity): void {
+        this._productQuantities[productName] = productQuantity;
+    }
+
     public addItemQuantity(product: Product, quantity: number): void {
         let productQuantity = new ProductQuantity(product, quantity)
         this.items.push(productQuantity);
-        let currentQuantity = this._productQuantities[product.name]
+        let currentQuantity = this.productQuantities()[product.name];
         if (currentQuantity) {
-            this._productQuantities[product.name] = this.increaseQuantity(product, currentQuantity, quantity);
+            this.setProductQuantity(product.name, this.increaseQuantity(product, currentQuantity, quantity));
         } else {
-            this._productQuantities[product.name] = productQuantity;
+            this.setProductQuantity(product.name, productQuantity);
         }
     }
 
