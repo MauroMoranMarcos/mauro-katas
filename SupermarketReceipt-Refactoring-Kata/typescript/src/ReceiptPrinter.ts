@@ -16,13 +16,7 @@ export class ReceiptPrinter {
 
         result = this.addDiscountLines(result, receipt);
 
-        result += this.EOL;
-        let pricePresentation = this.format2Decimals(receipt.getTotalPrice());
-        let total = "Total: ";
-        let whitespace = ReceiptPrinter.getWhitespace(this.columns - total.length - pricePresentation.length);
-        result += total;
-        result += whitespace;
-        result += pricePresentation;
+        result = this.addFinalResultLines(result, receipt);
 
         return result;
     }
@@ -60,6 +54,19 @@ export class ReceiptPrinter {
             result += pricePresentation;
             result += this.EOL;
         });
+
+        return result;
+    }
+
+    private addFinalResultLines(result: string, receipt: Receipt): string {
+        let pricePresentation = this.format2Decimals(receipt.getTotalPrice());
+        let total = "Total: ";
+        let whitespace = ReceiptPrinter.getWhitespace(this.columns - total.length - pricePresentation.length);
+
+        result += this.EOL;
+        result += total;
+        result += whitespace;
+        result += pricePresentation;
 
         return result;
     }
