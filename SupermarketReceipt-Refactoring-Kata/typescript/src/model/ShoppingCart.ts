@@ -34,6 +34,10 @@ export class ShoppingCart {
     public addItemQuantity(product: Product, quantity: number): void {
         let productQuantity = new ProductQuantity(product, quantity)
         this.items.push(productQuantity);
+        this.updateProductQuantities(product, quantity, productQuantity);
+    }
+
+    private updateProductQuantities(product: Product, quantity: number, productQuantity: ProductQuantity): void {
         let currentQuantity = this.productQuantities()[product.name];
         if (currentQuantity) {
             this.setProductQuantity(product.name, this.increaseQuantity(product, currentQuantity, quantity));
