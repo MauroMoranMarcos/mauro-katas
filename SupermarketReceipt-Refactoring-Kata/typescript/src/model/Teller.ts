@@ -2,7 +2,7 @@ import { SupermarketCatalog } from "./SupermarketCatalog"
 import { OffersByProduct, ShoppingCart } from "./ShoppingCart"
 import { Product } from "./Product"
 import { Receipt } from "./Receipt"
-import { OfferFactory } from "./OfferFactory"
+import { OfferFactory } from "./offers/OfferFactory"
 import { SpecialOfferType } from "./SpecialOfferType"
 
 export class Teller {

@@ -1,10 +1,9 @@
-import { SpecialOfferType } from "./SpecialOfferType";
-import { Product } from "./Product";
-import { Offer } from "./offers/Offer";
-import { ThreeForTwoOffer } from "./offers/ThreeForTwoOffer";
-import { TwoForAmountOffer } from "./offers/TwoForAmountOffer";
-import { TenPercentDiscountOffer } from "./offers/TenPercentDiscountOffer";
-import { FiveForAmountOffer } from "./offers/FiveForAmountOffer";
+import { SpecialOfferType } from "../SpecialOfferType";
+import { Product } from "../Product";
+import { Offer } from "./Offer";
+import { ThreeForTwoOffer } from "./ThreeForTwoOffer";
+import { TenPercentDiscountOffer } from "./TenPercentDiscountOffer";
+import { XForAmountOffer } from "./XForAmountOffer";
 
 export class OfferFactory {
     public static createNew(): OfferFactory {
@@ -16,9 +15,9 @@ export class OfferFactory {
             case SpecialOfferType.ThreeForTwo:
                 return new ThreeForTwoOffer(product, argument);
             case SpecialOfferType.TwoForAmount:
-                return new TwoForAmountOffer(product, argument);
+                return new XForAmountOffer(product, argument, 2);
             case SpecialOfferType.FiveForAmount:
-                return new FiveForAmountOffer(product, argument);
+                return new XForAmountOffer(product, argument, 5);
             case SpecialOfferType.TenPercentDiscount:
                 return new TenPercentDiscountOffer(product, argument);
             default:
