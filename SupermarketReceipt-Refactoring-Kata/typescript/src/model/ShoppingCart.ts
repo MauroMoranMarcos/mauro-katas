@@ -58,7 +58,7 @@ export class ShoppingCart {
             const quantity: number = productQuantity.quantity;
             const offer: Offer = offers[productName];
             const unitPrice: number = catalog.getUnitPrice(product);
-            
+
             const discount: Discount | null = offer.apply(quantity, unitPrice);
 
             if (discount != null) {

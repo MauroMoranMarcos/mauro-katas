@@ -1,6 +1,7 @@
 import { SupermarketCatalog } from "./SupermarketCatalog"
 import { OffersByProduct, ShoppingCart } from "./ShoppingCart"
 import { Product } from "./Product"
+import { ProductQuantity } from "./ProductQuantity";
 import { Receipt } from "./Receipt"
 import { OfferFactory } from "./offers/OfferFactory"
 import { SpecialOfferType } from "./SpecialOfferType"
@@ -26,7 +27,7 @@ export class Teller {
         return receipt;
     }
 
-    private addProductsToReceipt(receipt: Receipt, productQuantities: { product: Product, quantity: number }[]): void {
+    private addProductsToReceipt(receipt: Receipt, productQuantities: ProductQuantity[]): void {
         productQuantities.forEach(productQuantity => {
             this.addProductToReceipt(receipt, productQuantity);
         })
@@ -36,7 +37,7 @@ export class Teller {
         return quantity * unitPrice;
     }
 
-    private addProductToReceipt(receipt: Receipt, productQuantity: { product: Product, quantity: number }): void {
+    private addProductToReceipt(receipt: Receipt, productQuantity: ProductQuantity): void {
         let product: Product = productQuantity.product;
         let quantity: number = productQuantity.quantity;
         let unitPrice: number = this.catalog.getUnitPrice(product);
