@@ -13,7 +13,7 @@ export class OfferFactory {
     createOffer(offerType: SpecialOfferType, product: Product, argument: number): Offer {
         switch (offerType) {
             case SpecialOfferType.ThreeForTwo:
-                return new ThreeForTwoOffer(product, argument);
+                return new ThreeForTwoOffer(product);
             case SpecialOfferType.TwoForAmount:
                 return new XForAmountOffer(product, argument, 2);
             case SpecialOfferType.FiveForAmount:

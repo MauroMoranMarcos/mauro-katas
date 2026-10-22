@@ -4,28 +4,28 @@ import { Offer } from "./Offer";
 
 export class TenPercentDiscountOffer implements Offer {
     product: Product;
-    argument: number;
+    private readonly percentageDiscount: number;
 
-    constructor(product: Product, argument: number) {
+    constructor(product: Product, percentageDiscount: number) {
         this.product = product;
-        this.argument = argument;
+        this.percentageDiscount = percentageDiscount;
     }
 
     getProduct(): Product {
         return this.product;
     }
 
-    private getArgument(): number {
-        return this.argument;
+    private getPercentageDiscount(): number {
+        return this.percentageDiscount;
     }
 
     apply(quantity: number, unitPrice: number): Discount | null {
         if (quantity <= 0) {
             return null;
         }
-        
-        const discountAmount = quantity * unitPrice * this.getArgument() / 100.0;
-        return new Discount(this.getProduct(), this.getArgument() + "% off", discountAmount);
+
+        const discountAmount = quantity * unitPrice * this.getPercentageDiscount() / 100.0;
+        return new Discount(this.getProduct(), this.getPercentageDiscount() + "% off", discountAmount);
     }
     
 }

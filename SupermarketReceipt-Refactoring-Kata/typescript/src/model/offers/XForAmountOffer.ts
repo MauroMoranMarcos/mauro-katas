@@ -4,12 +4,12 @@ import { Offer } from "./Offer";
 
 export class XForAmountOffer implements Offer {
     product: Product;
-    argument: number;
-    private numberOfProducts: number;
+    private readonly amount: number;
+    private readonly numberOfProducts: number;
 
-    constructor(product: Product, argument: number, numberOfProducts: number) {
+    constructor(product: Product, amount: number, numberOfProducts: number) {
         this.product = product;
-        this.argument = argument;
+        this.amount = amount;
         this.numberOfProducts = numberOfProducts;
     }
 
@@ -17,8 +17,8 @@ export class XForAmountOffer implements Offer {
         return this.product;
     }
 
-    private getArgument(): number {
-        return this.argument;
+    private getAmount(): number {
+        return this.amount;
     }
 
     private getNumberOfProducts(): number {
@@ -32,7 +32,7 @@ export class XForAmountOffer implements Offer {
         
         const totalProducts = this.getNumberOfProducts();
         const numberOfXs = Math.floor(quantity / totalProducts);
-        const discountTotal = unitPrice * quantity - (this.getArgument() * numberOfXs + quantity % totalProducts * unitPrice);
-        return new Discount(this.getProduct(), totalProducts + " for " + this.getArgument(), discountTotal);
+        const discountTotal = unitPrice * quantity - (this.getAmount() * numberOfXs + quantity % totalProducts * unitPrice);
+        return new Discount(this.getProduct(), totalProducts + " for " + this.getAmount(), discountTotal);
     }
 }

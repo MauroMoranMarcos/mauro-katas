@@ -4,11 +4,9 @@ import { Offer } from "./Offer";
 
 export class ThreeForTwoOffer implements Offer {
     product: Product;
-    argument: number;
 
-    constructor(product: Product, argument: number) {
+    constructor(product: Product) {
         this.product = product;
-        this.argument = argument;
     }
 
     getProduct(): Product {
@@ -19,7 +17,7 @@ export class ThreeForTwoOffer implements Offer {
         if (quantity <= 2) {
             return null;
         }
-        
+
         const totalProducts = 3;
         const numberOfXs = Math.floor(quantity / totalProducts);
         const discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantity % totalProducts * unitPrice);
