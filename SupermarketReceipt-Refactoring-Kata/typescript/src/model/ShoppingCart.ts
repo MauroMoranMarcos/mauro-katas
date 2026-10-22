@@ -4,7 +4,7 @@ import * as _ from "lodash"
 import { ProductQuantity } from "./ProductQuantity"
 import { Discount } from "./Discount"
 import { Receipt } from "./Receipt"
-import { Offer } from "./Offer"
+import { Offer } from "./offers/Offer"
 import { SpecialOfferType } from "./SpecialOfferType"
 
 type ProductQuantities = { [productName: string]: ProductQuantity }
@@ -61,21 +61,7 @@ export class ShoppingCart {
             const unitPrice: number = catalog.getUnitPrice(product);
             let discount: Discount | null = null;
 
-            if (offer.offerType == SpecialOfferType.ThreeForTwo && quantity > 2) {
-                discount = this.createThreeForTwoOffer(product, quantity, unitPrice);
-            }
-
-            if (offer.offerType == SpecialOfferType.TwoForAmount && quantity >= 2) {
-                discount = this.createXForAmountOffer(product, 2, quantity, unitPrice, offer.argument);
-            }
-
-            if (offer.offerType == SpecialOfferType.FiveForAmount && quantity >= 5) {
-                discount = this.createXForAmountOffer(product, 5, quantity, unitPrice, offer.argument);
-            }
-
-            if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
-                discount = this.createTenPercentDiscount(product, quantity, unitPrice, offer.argument)
-            }
+            discount = offer.apply(quantity, unitPrice);
 
             if (discount != null) {
                 receipt.addDiscount(discount);
@@ -89,23 +75,5 @@ export class ShoppingCart {
 
     private productHasOffer(productName: string, offers: OffersByProduct): boolean {
         return offers[productName] !== undefined;
-    }
-
-    private createThreeForTwoOffer(product: Product, quantity: number, unitPrice: number): Discount {
-        const totalProducts = 3;
-        const numberOfXs = Math.floor(quantity / totalProducts);
-        const discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantity % totalProducts * unitPrice);
-        return new Discount(product, "3 for 2", discountAmount);
-    }
-
-    private createXForAmountOffer(product: Product, totalProducts: number, quantity: number, unitPrice: number, offerArgument: number): Discount {
-        const numberOfXs = Math.floor(quantity / totalProducts);
-        const discountTotal = unitPrice * quantity - (offerArgument * numberOfXs + quantity % totalProducts * unitPrice);
-        return new Discount(product, totalProducts + " for " + offerArgument, discountTotal);
-    }
-
-    private createTenPercentDiscount(product: Product, quantity: number, unitPrice: number, offerArgument: number): Discount {
-        const discountAmount = quantity * unitPrice * offerArgument / 100.0;
-        return new Discount(product, offerArgument + "% off", discountAmount);
     }
 }
