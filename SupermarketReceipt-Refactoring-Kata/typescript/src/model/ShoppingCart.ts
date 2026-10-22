@@ -5,7 +5,6 @@ import { ProductQuantity } from "./ProductQuantity"
 import { Discount } from "./Discount"
 import { Receipt } from "./Receipt"
 import { Offer } from "./offers/Offer"
-import { SpecialOfferType } from "./SpecialOfferType"
 
 type ProductQuantities = { [productName: string]: ProductQuantity }
 export type OffersByProduct = { [productName: string]: Offer };
@@ -13,7 +12,7 @@ export type OffersByProduct = { [productName: string]: Offer };
 export class ShoppingCart {
 
     private readonly items: ProductQuantity[] = [];
-    _productQuantities: ProductQuantities = {};
+    private _productQuantities: ProductQuantities = {};
 
     getItems(): ProductQuantity[] {
         return _.clone(this.items);
@@ -27,7 +26,7 @@ export class ShoppingCart {
         return this._productQuantities;
     }
 
-    setProductQuantity(productName: string, productQuantity: ProductQuantity): void {
+    private setProductQuantity(productName: string, productQuantity: ProductQuantity): void {
         this._productQuantities[productName] = productQuantity;
     }
 
