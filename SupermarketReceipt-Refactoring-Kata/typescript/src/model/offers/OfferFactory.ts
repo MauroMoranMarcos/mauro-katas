@@ -11,17 +11,17 @@ export class OfferFactory {
     }
 
     createOffer(offerType: SpecialOfferType, product: Product, argument: number): Offer {
-        switch (offerType) {
-            case SpecialOfferType.ThreeForTwo:
-                return new ThreeForTwoOffer(product);
-            case SpecialOfferType.TwoForAmount:
-                return new XForAmountOffer(product, argument, 2);
-            case SpecialOfferType.FiveForAmount:
-                return new XForAmountOffer(product, argument, 5);
-            case SpecialOfferType.TenPercentDiscount:
-                return new TenPercentDiscountOffer(product, argument);
-            default:
-                throw new Error("Unsupported offer type");
+        const offerDescriptions: Record<SpecialOfferType, (product: Product, argument: number) => Offer> = {
+            [SpecialOfferType.ThreeForTwo]: (product: Product, argument: number) => new ThreeForTwoOffer(product),
+            [SpecialOfferType.TwoForAmount]: (product: Product, argument: number) => new XForAmountOffer(product, argument, 2),
+            [SpecialOfferType.FiveForAmount]: (product: Product, argument: number) => new XForAmountOffer(product, argument, 5),
+            [SpecialOfferType.TenPercentDiscount]: (product: Product, argument: number) => new TenPercentDiscountOffer(product, argument)
+        };
+
+        if (!offerDescriptions[offerType]) {
+            throw new Error("Unsupported offer type");
         }
+        
+        return offerDescriptions[offerType](product, argument);
     }
 }
