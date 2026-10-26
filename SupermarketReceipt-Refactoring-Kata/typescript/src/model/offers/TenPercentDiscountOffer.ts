@@ -3,7 +3,7 @@ import { Product } from "../Product";
 import { Offer } from "./Offer";
 
 export class TenPercentDiscountOffer implements Offer {
-    product: Product;
+    private readonly product: Product;
     private readonly percentageDiscount: number;
 
     constructor(product: Product, percentageDiscount: number) {

@@ -3,7 +3,7 @@ import { Product } from "../Product";
 import { Offer } from "./Offer";
 
 export class XForAmountOffer implements Offer {
-    product: Product;
+    private readonly product: Product;
     private readonly amount: number;
     private readonly numberOfProducts: number;
 
