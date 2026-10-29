@@ -8,13 +8,8 @@ export class Receipt {
     private discounts: Discount[] = [];
 
     public getTotalPrice(): number {
-        let total = 0.0;
-        for (let item of this.items) {
-            total += item.totalPrice;
-        }
-        for ( let discount of this.discounts) {
-            total -= discount.discountAmount;
-        }
+        let total = this.getTotalItemsPrice() - this.getTotalItemsDiscount();
+
         return total;
     }
 
@@ -32,5 +27,25 @@ export class Receipt {
 
     public getDiscounts(): Discount[] {
         return this.discounts;
+    }
+
+    private getTotalItemsPrice(): number {
+        let total = 0.0;
+
+        this.items.forEach(item => {
+            total += item.totalPrice;
+        });
+
+        return total;
+    }
+
+    private getTotalItemsDiscount(): number {
+        let totalDiscount = 0.0;
+
+        this.discounts.forEach(discount => {
+            totalDiscount += discount.discountAmount;
+        });
+
+        return totalDiscount;
     }
 }
