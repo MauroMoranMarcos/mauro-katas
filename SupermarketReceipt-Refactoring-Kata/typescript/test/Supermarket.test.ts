@@ -5,8 +5,10 @@ import {Receipt} from "../src/model/Receipt"
 import {ShoppingCart} from "../src/model/ShoppingCart"
 import {Teller} from "../src/model/Teller"
 import {ReceiptPrinter} from "../src/ReceiptPrinter"
-import {SpecialOfferType} from "../src/model/SpecialOfferType"
+import {SpecialOfferType} from "../src/model/offers/SpecialOfferType"
+import {BundleType} from "../src/model/bundles/BundleType"
 import {ProductUnit} from "../src/model/ProductUnit"
+import {ProductQuantity} from "../src/model/ProductQuantity"
 import {assert} from "chai";
 import { it } from "node:test"
 import { describe } from "node:test"
@@ -128,13 +130,36 @@ describe('Supermarket individual discounts', () => {
         // ARRANGE
         const catalog: SupermarketCatalog = new FakeCatalog();
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
-        catalog.addProduct(toothbrush, 0.09);
+        catalog.addProduct(toothbrush, 0.99);
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.79);
 
         const teller: Teller = new Teller(catalog);
-        teller.addSpecialOffer(SpecialOfferType.DiscountedBundle, toothbrush, 10.0);
-        teller.addSpecialOffer(SpecialOfferType.DiscountedBundle, toothpaste, 10.0);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 1);
+        cart.addItemQuantity(toothpaste, 2);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        assert.approximately(receipt.getTotalPrice(), (0.99 + 2 * 1.79) * 0.9, 0.01);
+        assert.equal(receipt.getDiscounts().length, 1);
+        assert.equal(receipt.getItems().length, 2);
+    });
+
+    it('Incomplete bundle gets no discount', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
         cart.addItemQuantity(toothbrush, 1);
@@ -144,21 +169,32 @@ describe('Supermarket individual discounts', () => {
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
 
         // ASSERT
-        assert.approximately(receipt.getTotalPrice(), (0.09 + 1.79) * 0.9, 0.01);
-        assert.isNotEmpty(receipt.getDiscounts());
-        assert.equal(receipt.getItems().length, 2);
-        
-        const receiptItemToothbrush = receipt.getItems()[0];
-        assert.equal(receiptItemToothbrush.product, toothbrush);
-        assert.equal(receiptItemToothbrush.price, 0.09);
-        assert.approximately(receiptItemToothbrush.totalPrice, 0.09, 0.01);
-        assert.equal(receiptItemToothbrush.quantity, 1);
+        assert.approximately(receipt.getTotalPrice(), 0.99 + 1.79, 0.01);
+        assert.isEmpty(receipt.getDiscounts());
+    });
 
-        const receiptItemToothpaste = receipt.getItems()[1];
-        assert.equal(receiptItemToothpaste.product, toothpaste);
-        assert.equal(receiptItemToothpaste.price, 1.79);
-        assert.approximately(receiptItemToothpaste.totalPrice, 1.79, 0.01);
-        assert.equal(receiptItemToothpaste.quantity, 1);
+    it('Discount is applied once per complete bundle', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 3);
+        cart.addItemQuantity(toothpaste, 5);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        const fullPrice = 3 * 0.99 + 5 * 1.79;
+        const discount = 2 * (0.99 + 2 * 1.79) * 0.1;
+        assert.approximately(receipt.getTotalPrice(), fullPrice - discount, 0.01);
     });
 });
 
