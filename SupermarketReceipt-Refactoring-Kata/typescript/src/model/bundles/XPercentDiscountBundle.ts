@@ -3,7 +3,8 @@ import { Product } from "../Product";
 import { ProductQuantity } from "../ProductQuantity";
 import { ProductUnit } from "../ProductUnit";
 import { SupermarketCatalog } from "../SupermarketCatalog";
-import { Bundle, ProductQuantities } from "./Bundle";
+import { Bundle } from "./Bundle";
+import { ProductQuantities } from "../CommonTypes";
 
 export class XPercentDiscountBundle implements Bundle {
 

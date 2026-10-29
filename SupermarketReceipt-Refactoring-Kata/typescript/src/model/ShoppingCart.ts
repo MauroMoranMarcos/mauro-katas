@@ -6,8 +6,8 @@ import { Discount } from "./Discount"
 import { Receipt } from "./Receipt"
 import { Offer } from "./offers/Offer"
 import { Bundle } from "./bundles/Bundle"
+import { ProductQuantities } from "./CommonTypes";
 
-type ProductQuantities = { [productName: string]: ProductQuantity }
 export type OffersByProduct = { [productName: string]: Offer };
 export type Bundles = Bundle[];
 
