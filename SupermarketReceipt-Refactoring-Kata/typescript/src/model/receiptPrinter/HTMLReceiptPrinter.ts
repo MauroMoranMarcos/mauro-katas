@@ -7,21 +7,11 @@ export class HTMLReceiptPrinter implements ReceiptPrinter {
     printReceipt(receipt: Receipt): string {
         const lines: string[] = ['<table class="receipt">'];
 
-        receipt.getItems().forEach(item => {
-            const name = this.escape(item.product.name);
-            lines.push(`<tr class="item"><td>${name}</td><td>${format2Decimals(item.totalPrice)}</td></tr>`);
-            if (item.quantity != 1) {
-                lines.push(`<tr class="detail"><td colspan="2">${format2Decimals(item.price)} * ${presentQuantity(item)}</td></tr>`);
-            }
-        });
+        this.addItemsLines(lines, receipt);
 
-        receipt.getDiscounts().forEach(discount => {
-            const label = this.escape(`${discount.description}(${discount.product.name})`);
-            lines.push(`<tr class="discount"><td>${label}</td><td>-${format2Decimals(discount.discountAmount)}</td></tr>`);
-        });
+        this.addDiscountLines(lines, receipt);
 
-        lines.push(`<tr class="total"><td>Total:</td><td>${format2Decimals(receipt.getTotalPrice())}</td></tr>`);
-        lines.push('</table>');
+        this.addFinalResultLines(lines, receipt);
 
         return lines.join("\n");
     }
@@ -33,6 +23,28 @@ export class HTMLReceiptPrinter implements ReceiptPrinter {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#39;");
+    }
+
+    private addItemsLines(lines: string[], receipt: Receipt): void {
+        receipt.getItems().forEach(item => {
+            const name = this.escape(item.product.name);
+            lines.push(`<tr class="item"><td>${name}</td><td>${format2Decimals(item.totalPrice)}</td></tr>`);
+            if (item.quantity != 1) {
+                lines.push(`<tr class="detail"><td colspan="2">${format2Decimals(item.price)} * ${presentQuantity(item)}</td></tr>`);
+            }
+        });
+    }
+
+    private addDiscountLines(lines: string[], receipt: Receipt): void {
+        receipt.getDiscounts().forEach(discount => {
+            const label = this.escape(`${discount.description}(${discount.product.name})`);
+            lines.push(`<tr class="discount"><td>${label}</td><td>-${format2Decimals(discount.discountAmount)}</td></tr>`);
+        });
+    }
+
+    private addFinalResultLines(lines: string[], receipt: Receipt): void {
+        lines.push(`<tr class="total"><td>Total:</td><td>${format2Decimals(receipt.getTotalPrice())}</td></tr>`);
+        lines.push('</table>');
     }
 
 }
