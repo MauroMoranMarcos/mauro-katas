@@ -12,8 +12,8 @@ import {ProductQuantity} from "../src/model/ProductQuantity"
 import {assert} from "chai";
 import { it } from "node:test"
 import { describe } from "node:test"
-import { ReceiptPrinterType } from "../src/model/receiptPrinter/ReceiptPrinterType";
-import { ReceiptPrinterFactory } from "../src/model/receiptPrinter/ReceiptPrinterFactory"
+import { ReceiptType } from "../src/model/receiptPrinter/ReceiptType";
+import { ReceiptRendererFactory } from "../src/model/receiptPrinter/ReceiptRendererFactory"
 
 describe('Supermarket individual discounts', () => {
     it('Ten percent discount each', () => {
@@ -775,9 +775,9 @@ describe('Supermarket receipt printer', () => {
 
         // ACT
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
-        const receiptPrinterFactory: ReceiptPrinterFactory = ReceiptPrinterFactory.createNew();
-        const receiptPrinter: ReceiptPrinter = receiptPrinterFactory.createReceiptPrinter(ReceiptPrinterType.Text);
-        const printed: string = receiptPrinter.printReceipt(receipt);
+        const receiptRendererFactory: ReceiptRendererFactory = ReceiptRendererFactory.createNew();
+        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptRendererFactory);
+        const printed: string = receiptPrinter.printReceipt(ReceiptType.Text, receipt);
 
         // ASSERT
         const lines = printed.split(/\r?\n/);
@@ -809,9 +809,9 @@ describe('Supermarket receipt printer', () => {
 
         // ACT
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
-        const receiptPrinterFactory: ReceiptPrinterFactory = ReceiptPrinterFactory.createNew();
-        const receiptPrinter: ReceiptPrinter = receiptPrinterFactory.createReceiptPrinter(ReceiptPrinterType.HTML);
-        const printed: string = receiptPrinter.printReceipt(receipt);
+        const receiptPrinterFactory: ReceiptRendererFactory = ReceiptRendererFactory.createNew();
+        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptPrinterFactory);
+        const printed: string = receiptPrinter.printReceipt(ReceiptType.HTML, receipt);
 
         // ASSERT
         const lines = printed.split(/\r?\n/);
@@ -823,6 +823,37 @@ describe('Supermarket receipt printer', () => {
             '<tr class="detail"><td colspan="2">0.99 * 3</td></tr>',
             '<tr class="discount"><td>3 for 2(toothbrush)</td><td>-0.99</td></tr>',
             '<tr class="total"><td>Total:</td><td>5.96</td></tr>',
+            '</table>',
+        ]);
+    });
+
+    it('Prints an item of quantity one without a detail line', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const rice: Product = new Product("rice", ProductUnit.Each);
+        catalog.addProduct(rice, 1.50);
+
+        const teller: Teller = new Teller(catalog);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(rice, 1);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(ReceiptRendererFactory.createNew());
+        const text: string = receiptPrinter.printReceipt(ReceiptType.Text, receipt);
+        const html: string = receiptPrinter.printReceipt(ReceiptType.HTML, receipt);
+
+        // ASSERT
+        assert.deepEqual(text.split(/\r?\n/), [
+            "rice" + " ".repeat(32) + "1.50",
+            "",
+            "Total: " + " ".repeat(29) + "1.50",
+        ]);
+        assert.deepEqual(html.split(/\r?\n/), [
+            '<table class="receipt">',
+            '<tr class="item"><td>rice</td><td>1.50</td></tr>',
+            '<tr class="total"><td>Total:</td><td>1.50</td></tr>',
             '</table>',
         ]);
     });
