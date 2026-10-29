@@ -1,30 +1,28 @@
 import { Receipt } from "../Receipt";
 import { format2Decimals, presentQuantity } from "./ReceiptFormatting";
-import { ReceiptType } from "./ReceiptType";
-import { ReceiptRendererFactory } from "./ReceiptRendererFactory";
+import { ReceiptRenderer } from "./ReceiptRenderer";
 
 export class ReceiptPrinter {
-    private readonly receiptRendererFactory: ReceiptRendererFactory;
+    private readonly receiptRenderer: ReceiptRenderer;
 
-    constructor(receiptRendererFactory: ReceiptRendererFactory) {
-        this.receiptRendererFactory = receiptRendererFactory;
+    constructor(receiptRenderer: ReceiptRenderer) {
+        this.receiptRenderer = receiptRenderer;
     }
 
-    printReceipt(receiptType: ReceiptType, receipt: Receipt): string {
+    printReceipt(receipt: Receipt): string {
         let receiptOutput = "";
-        const receiptRenderer = this.receiptRendererFactory.createReceiptRenderer(receiptType);
-
-        receiptOutput += receiptRenderer.beginReceipt();
+        
+        receiptOutput += this.receiptRenderer.beginReceipt();
         
         receipt.getItems().forEach(item => {
             let name = item.product.name;
             let totalPrice = format2Decimals(item.totalPrice);
             let unitPrice = format2Decimals(item.price);
             let quantity = presentQuantity(item);
-            receiptOutput += receiptRenderer.renderItem(name, totalPrice);
+            receiptOutput += this.receiptRenderer.renderItem(name, totalPrice);
 
             if (item.quantity != 1) {
-                receiptOutput += receiptRenderer.renderItemDetail(unitPrice, quantity);
+                receiptOutput += this.receiptRenderer.renderItemDetail(unitPrice, quantity);
             }
         });
 
@@ -32,12 +30,12 @@ export class ReceiptPrinter {
             let productPresentation = discount.product.name;
             let description = discount.description;
             let pricePresentation = format2Decimals(discount.discountAmount);
-            receiptOutput += receiptRenderer.renderDiscount(description, productPresentation, pricePresentation);
+            receiptOutput += this.receiptRenderer.renderDiscount(description, productPresentation, pricePresentation);
         });
 
         let pricePresentation = format2Decimals(receipt.getTotalPrice());
-        receiptOutput += receiptRenderer.renderTotal(pricePresentation);
-        receiptOutput += receiptRenderer.endReceipt();
+        receiptOutput += this.receiptRenderer.renderTotal(pricePresentation);
+        receiptOutput += this.receiptRenderer.endReceipt();
 
         return receiptOutput;
     }

@@ -776,8 +776,9 @@ describe('Supermarket receipt printer', () => {
         // ACT
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
         const receiptRendererFactory: ReceiptRendererFactory = ReceiptRendererFactory.createNew();
-        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptRendererFactory);
-        const printed: string = receiptPrinter.printReceipt(ReceiptType.Text, receipt);
+        const receiptRenderer = receiptRendererFactory.createReceiptRenderer(ReceiptType.Text);
+        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptRenderer);
+        const printed: string = receiptPrinter.printReceipt(receipt);
 
         // ASSERT
         const lines = printed.split(/\r?\n/);
@@ -809,9 +810,10 @@ describe('Supermarket receipt printer', () => {
 
         // ACT
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
-        const receiptPrinterFactory: ReceiptRendererFactory = ReceiptRendererFactory.createNew();
-        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptPrinterFactory);
-        const printed: string = receiptPrinter.printReceipt(ReceiptType.HTML, receipt);
+        const receiptRendererFactory: ReceiptRendererFactory = ReceiptRendererFactory.createNew();
+        const receiptRenderer = receiptRendererFactory.createReceiptRenderer(ReceiptType.HTML);
+        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptRenderer);
+        const printed: string = receiptPrinter.printReceipt(receipt);
 
         // ASSERT
         const lines = printed.split(/\r?\n/);
@@ -840,9 +842,13 @@ describe('Supermarket receipt printer', () => {
 
         // ACT
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
-        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(ReceiptRendererFactory.createNew());
-        const text: string = receiptPrinter.printReceipt(ReceiptType.Text, receipt);
-        const html: string = receiptPrinter.printReceipt(ReceiptType.HTML, receipt);
+        const receiptRendererFactory: ReceiptRendererFactory = ReceiptRendererFactory.createNew();
+        const receiptRenderer = receiptRendererFactory.createReceiptRenderer(ReceiptType.Text);
+        const receiptPrinter: ReceiptPrinter = new ReceiptPrinter(receiptRenderer);
+        const text: string = receiptPrinter.printReceipt(receipt);
+        const htmlRenderer = receiptRendererFactory.createReceiptRenderer(ReceiptType.HTML);
+        const htmlPrinter: ReceiptPrinter = new ReceiptPrinter(htmlRenderer);
+        const html: string = htmlPrinter.printReceipt(receipt);
 
         // ASSERT
         assert.deepEqual(text.split(/\r?\n/), [
