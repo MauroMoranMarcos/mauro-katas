@@ -1,4 +1,4 @@
-import { SpecialOfferType } from "../SpecialOfferType";
+import { SpecialOfferType } from "./SpecialOfferType";
 import { Product } from "../Product";
 import { Offer } from "./Offer";
 import { ThreeForTwoOffer } from "./ThreeForTwoOffer";

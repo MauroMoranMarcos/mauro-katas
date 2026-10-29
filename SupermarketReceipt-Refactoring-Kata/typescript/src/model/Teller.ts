@@ -1,15 +1,19 @@
 import { SupermarketCatalog } from "./SupermarketCatalog"
-import { OffersByProduct, ShoppingCart } from "./ShoppingCart"
+import { Bundles, OffersByProduct, ShoppingCart } from "./ShoppingCart"
 import { Product } from "./Product"
 import { ProductQuantity } from "./ProductQuantity";
 import { Receipt } from "./Receipt"
 import { OfferFactory } from "./offers/OfferFactory"
-import { SpecialOfferType } from "./SpecialOfferType"
+import { SpecialOfferType } from "./offers/SpecialOfferType"
+import { BundleFactory } from './bundles/BundleFactory';
+import { BundleType } from './bundles/BundleType';
 
 export class Teller {
 
     private offerFactory: OfferFactory = OfferFactory.createNew();
+    private bundleFactory: BundleFactory = BundleFactory.createNew();
     private offers: OffersByProduct = {};
+    private bundles: Bundles = [];
 
     public constructor(private readonly catalog: SupermarketCatalog) {
     }
@@ -18,11 +22,16 @@ export class Teller {
         this.offers[product.name] = this.offerFactory.createOffer(offerType, product, argument);
     }
 
+    public addBundle(bundleType: BundleType, items: ProductQuantity[], argument: number): void {
+        this.bundles.push(this.bundleFactory.createBundle(bundleType, items, argument));
+    }
+
     public checksOutArticlesFrom(theCart: ShoppingCart): Receipt {
         const receipt = new Receipt();
         const productQuantities = theCart.getItems();
         this.addProductsToReceipt(receipt, productQuantities);
         theCart.handleOffers(receipt, this.offers, this.catalog);
+        theCart.handleBundles(receipt, this.bundles, this.catalog);
 
         return receipt;
     }

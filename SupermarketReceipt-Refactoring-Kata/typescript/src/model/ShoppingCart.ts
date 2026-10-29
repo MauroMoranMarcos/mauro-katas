@@ -5,9 +5,11 @@ import { ProductQuantity } from "./ProductQuantity"
 import { Discount } from "./Discount"
 import { Receipt } from "./Receipt"
 import { Offer } from "./offers/Offer"
+import { Bundle } from "./bundles/Bundle"
 
 type ProductQuantities = { [productName: string]: ProductQuantity }
 export type OffersByProduct = { [productName: string]: Offer };
+export type Bundles = Bundle[];
 
 export class ShoppingCart {
 
@@ -60,6 +62,16 @@ export class ShoppingCart {
             const unitPrice: number = catalog.getUnitPrice(product);
 
             const discount: Discount | null = offer.apply(quantity, unitPrice);
+
+            if (discount != null) {
+                receipt.addDiscount(discount);
+            }
+        }
+    }
+
+    handleBundles(receipt: Receipt, bundles: Bundles, catalog: SupermarketCatalog): void {
+        for (const bundle of bundles) {
+            const discount: Discount | null = bundle.apply(this.productQuantities(), catalog);
 
             if (discount != null) {
                 receipt.addDiscount(discount);
