@@ -10,16 +10,16 @@ export class ReceiptRendererFactory {
     }
 
     createReceiptRenderer(receiptType: ReceiptType): ReceiptRenderer {
-        const receiptRenderer: Record<ReceiptType, ReceiptRenderer> = {
-            [ReceiptType.Text]: new TextReceiptRenderer(),
-            [ReceiptType.HTML]: new HTMLReceiptRenderer()
+        const receiptRenderers: Record<ReceiptType, () => ReceiptRenderer> = {
+            [ReceiptType.Text]: () => new TextReceiptRenderer(),
+            [ReceiptType.HTML]: () => new HTMLReceiptRenderer()
         };
 
-        if (!receiptRenderer[receiptType]) {
+        if (!receiptRenderers[receiptType]) {
             throw new Error("Unsupported receipt renderer type");
         }
 
-        return receiptRenderer[receiptType];
+        return receiptRenderers[receiptType]();
     }
 
 }
