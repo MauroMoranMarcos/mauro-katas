@@ -1,9 +1,10 @@
-import {ProductUnit} from "./model/ProductUnit"
-import {ReceiptItem} from "./model/ReceiptItem"
-import {Receipt} from "./model/Receipt"
+import {Receipt} from "../Receipt"
+import {ReceiptItem} from "../ReceiptItem"
+import {ProductUnit} from "../ProductUnit"
+import {ReceiptPrinter} from "./ReceiptPrinter"
+import process from "process";
 
-export class ReceiptPrinter {
-
+export class TextReceiptPrinter implements ReceiptPrinter {
     private readonly EOL = process.platform === "win32" ? "\r\n" : "\n";
 
     public constructor(private readonly columns: number = 40) {
@@ -26,10 +27,10 @@ export class ReceiptPrinter {
             let name = item.product.name;
             let price = this.format2Decimals(item.totalPrice);
             let unitPrice = this.format2Decimals(item.price);
-            let quantity = ReceiptPrinter.presentQuantity(item);
+            let quantity = this.presentQuantity(item);
     
             let whitespaceSize = this.columns - name.length - price.length;
-            let line = name + ReceiptPrinter.getWhitespace(whitespaceSize) + price + this.EOL;
+            let line = name + this.getWhitespace(whitespaceSize) + price + this.EOL;
     
             if (item.quantity != 1) {
                 line += "  " + unitPrice + " * " + quantity + this.EOL;
@@ -49,7 +50,7 @@ export class ReceiptPrinter {
             result += "(";
             result += productPresentation;
             result += ")";
-            result += ReceiptPrinter.getWhitespace(this.columns - 3 - productPresentation.length - description.length - pricePresentation.length);
+            result += this.getWhitespace(this.columns - 3 - productPresentation.length - description.length - pricePresentation.length);
             result += "-";
             result += pricePresentation;
             result += this.EOL;
@@ -61,7 +62,7 @@ export class ReceiptPrinter {
     private addFinalResultLines(result: string, receipt: Receipt): string {
         let pricePresentation = this.format2Decimals(receipt.getTotalPrice());
         let total = "Total: ";
-        let whitespace = ReceiptPrinter.getWhitespace(this.columns - total.length - pricePresentation.length);
+        let whitespace = this.getWhitespace(this.columns - total.length - pricePresentation.length);
 
         result += this.EOL;
         result += total;
@@ -78,14 +79,14 @@ export class ReceiptPrinter {
         }).format(number)
     }
 
-    private static presentQuantity( item: ReceiptItem): string  {
+    private presentQuantity( item: ReceiptItem): string  {
         return ProductUnit.Each == item.product.unit
             // TODO make sure this is the simplest way to make something similar to the java version
                 ? new Intl.NumberFormat('en-UK', {maximumFractionDigits: 0}).format(item.quantity)
                 : new Intl.NumberFormat('en-UK', {minimumFractionDigits: 3}).format(item.quantity);
     }
 
-    private static getWhitespace(whitespaceSize: number): string {
+    private getWhitespace(whitespaceSize: number): string {
         return " ".repeat(whitespaceSize);
     }
 }
