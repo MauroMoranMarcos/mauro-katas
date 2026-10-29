@@ -196,6 +196,56 @@ describe('Supermarket individual discounts', () => {
         const discount = 2 * (0.99 + 2 * 1.79) * 0.1;
         assert.approximately(receipt.getTotalPrice(), fullPrice - discount, 0.01);
     });
+
+    it('Bundle discount line describes the bundle and its amount', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 1);
+        cart.addItemQuantity(toothpaste, 2);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        const discount = receipt.getDiscounts()[0];
+        assert.equal(discount.description, "10% off");
+        assert.equal(discount.product.name, "toothbrush + toothpaste");
+        assert.approximately(discount.discountAmount, (0.99 + 2 * 1.79) * 0.1, 0.01);
+    });
+
+    it('Bundle with a product sold by weight only counts complete bundles', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const apples: Product = new Product("apples", ProductUnit.Kilo);
+        catalog.addProduct(apples, 2.00);
+        const bread: Product = new Product("bread", ProductUnit.Each);
+        catalog.addProduct(bread, 1.50);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(apples, 0.5), new ProductQuantity(bread, 1)], 10.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(apples, 1.2);
+        cart.addItemQuantity(bread, 3);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        const fullPrice = 1.2 * 2.00 + 3 * 1.50;
+        const discount = 2 * (0.5 * 2.00 + 1.50) * 0.1;
+        assert.approximately(receipt.getTotalPrice(), fullPrice - discount, 0.01);
+        assert.equal(receipt.getDiscounts().length, 1);
+    });
 });
 
 describe('Supermarket combined discounts', () => {
@@ -340,6 +390,125 @@ describe('Supermarket combined discounts', () => {
         assert.equal(receiptItemTablecloth.price, 9.99);
         assert.approximately(receiptItemTablecloth.totalPrice, 2*9.99, 0.01);
         assert.equal(receiptItemTablecloth.quantity, 2);
+    });
+
+    it('Bundle and buy two, get one free on a different product', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+        const cookie: Product = new Product("cookie", ProductUnit.Each);
+        catalog.addProduct(cookie, 0.89);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+        teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, cookie, 0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 1);
+        cart.addItemQuantity(toothpaste, 2);
+        cart.addItemQuantity(cookie, 3);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        assert.approximately(receipt.getTotalPrice(), (0.99 + 2 * 1.79) * 0.9 + 2 * 0.89, 0.01);
+        assert.equal(receipt.getDiscounts().length, 2);
+        assert.equal(receipt.getItems().length, 3);
+    });
+
+    it('Bundle with five for amount and ten percent discount on other products', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+        const cookie: Product = new Product("cookie", ProductUnit.Each);
+        catalog.addProduct(cookie, 0.89);
+        const apples: Product = new Product("apples", ProductUnit.Kilo);
+        catalog.addProduct(apples, 1.99);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+        teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
+        teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, apples, 10.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 1);
+        cart.addItemQuantity(toothpaste, 2);
+        cart.addItemQuantity(cookie, 5);
+        cart.addItemQuantity(apples, 2);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        const expected = (0.99 + 2 * 1.79) * 0.9 + 3.00 + 2 * 1.99 * 0.9;
+        assert.approximately(receipt.getTotalPrice(), expected, 0.01);
+        assert.equal(receipt.getDiscounts().length, 3);
+    });
+
+    it('Two independent bundles in the same cart, only one complete', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+        const shampoo: Product = new Product("shampoo", ProductUnit.Each);
+        catalog.addProduct(shampoo, 3.50);
+        const conditioner: Product = new Product("conditioner", ProductUnit.Each);
+        catalog.addProduct(conditioner, 4.00);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(shampoo, 1), new ProductQuantity(conditioner, 1)], 20.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 1);
+        cart.addItemQuantity(toothpaste, 2);
+        cart.addItemQuantity(shampoo, 2);
+        cart.addItemQuantity(conditioner, 1);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        const fullPrice = 0.99 + 2 * 1.79 + 2 * 3.50 + 4.00;
+        const discounts = (0.99 + 2 * 1.79) * 0.1 + (3.50 + 4.00) * 0.2;
+        assert.approximately(receipt.getTotalPrice(), fullPrice - discounts, 0.01);
+        assert.equal(receipt.getDiscounts().length, 2);
+    });
+
+    it('Bundle and buy two, get one free on the same product stack both discounts', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+        const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
+        catalog.addProduct(toothpaste, 1.79);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
+        teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(toothbrush, 3);
+        cart.addItemQuantity(toothpaste, 2);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+
+        // ASSERT
+        const fullPrice = 3 * 0.99 + 2 * 1.79;
+        const threeForTwoDiscount = 0.99;
+        const bundleDiscount = (0.99 + 2 * 1.79) * 0.1;
+        assert.approximately(receipt.getTotalPrice(), fullPrice - threeForTwoDiscount - bundleDiscount, 0.01);
+        assert.equal(receipt.getDiscounts().length, 2);
     });
 });
 
