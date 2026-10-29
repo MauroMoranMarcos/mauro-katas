@@ -29,7 +29,7 @@ When possible, the original repo will be referenced for each kata.
 | Theatrical Players Refactoring Kata | C# | ✅ Completed |
 | Gilded Rose Refactoring Kata | C# | ✅ Completed |
 | Tennis Refactoring Kata | Java | ⏳ In Progress |
-| SupermarketReceipt Refactoring Kata | TypeScript | ⏳ In Progress |
+| SupermarketReceipt Refactoring Kata | TypeScript | ✅ In Progress |
 
 ### Theatrical Players Refactoring Kata
 Original repo: https://github.com/emilybache/Theatrical-Players-Refactoring-Kata
