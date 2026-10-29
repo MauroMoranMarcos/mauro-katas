@@ -791,4 +791,39 @@ describe('Supermarket receipt printer', () => {
             "Total: " + " ".repeat(29) + "5.96",
         ]);
     });
+
+    it('Prints items, discounts and total in HTML', () => {
+        // ARRANGE
+        const catalog: SupermarketCatalog = new FakeCatalog();
+        const apples: Product = new Product("apples", ProductUnit.Kilo);
+        catalog.addProduct(apples, 1.99);
+        const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
+        catalog.addProduct(toothbrush, 0.99);
+
+        const teller: Teller = new Teller(catalog);
+        teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
+
+        const cart: ShoppingCart = new ShoppingCart();
+        cart.addItemQuantity(apples, 2);
+        cart.addItemQuantity(toothbrush, 3);
+
+        // ACT
+        const receipt: Receipt = teller.checksOutArticlesFrom(cart);
+        const receiptPrinterFactory: ReceiptPrinterFactory = ReceiptPrinterFactory.createNew();
+        const receiptPrinter: ReceiptPrinter = receiptPrinterFactory.createReceiptPrinter(ReceiptPrinterType.HTML);
+        const printed: string = receiptPrinter.printReceipt(receipt);
+
+        // ASSERT
+        const lines = printed.split(/\r?\n/);
+        assert.deepEqual(lines, [
+            '<table class="receipt">',
+            '<tr class="item"><td>apples</td><td>3.98</td></tr>',
+            '<tr class="detail"><td colspan="2">1.99 * 2.000</td></tr>',
+            '<tr class="item"><td>toothbrush</td><td>2.97</td></tr>',
+            '<tr class="detail"><td colspan="2">0.99 * 3</td></tr>',
+            '<tr class="discount"><td>3 for 2(toothbrush)</td><td>-0.99</td></tr>',
+            '<tr class="total"><td>Total:</td><td>5.96</td></tr>',
+            '</table>',
+        ]);
+    });
 });
