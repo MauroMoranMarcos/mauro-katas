@@ -4,7 +4,7 @@ import {SupermarketCatalog} from "../src/model/SupermarketCatalog"
 import {Receipt} from "../src/model/Receipt"
 import {ShoppingCart} from "../src/model/ShoppingCart"
 import {Teller} from "../src/model/Teller"
-import {ReceiptPrinter} from "../src/ReceiptPrinter"
+import {ReceiptPrinter} from "../src/model/receiptPrinter/ReceiptPrinter"
 import {SpecialOfferType} from "../src/model/offers/SpecialOfferType"
 import {BundleType} from "../src/model/bundles/BundleType"
 import {ProductUnit} from "../src/model/ProductUnit"
@@ -12,6 +12,8 @@ import {ProductQuantity} from "../src/model/ProductQuantity"
 import {assert} from "chai";
 import { it } from "node:test"
 import { describe } from "node:test"
+import { ReceiptPrinterType } from "../src/model/receiptPrinter/ReceiptPrinterType";
+import { ReceiptPrinterFactory } from "../src/model/receiptPrinter/ReceiptPrinterFactory"
 
 describe('Supermarket individual discounts', () => {
     it('Ten percent discount each', () => {
@@ -756,7 +758,7 @@ describe('Supermarket several offers in the same cart', () => {
 });
 
 describe('Supermarket receipt printer', () => {
-    it('Prints items, discounts and total', () => {
+    it('Prints items, discounts and total in text', () => {
         // ARRANGE
         const catalog: SupermarketCatalog = new FakeCatalog();
         const apples: Product = new Product("apples", ProductUnit.Kilo);
@@ -773,7 +775,9 @@ describe('Supermarket receipt printer', () => {
 
         // ACT
         const receipt: Receipt = teller.checksOutArticlesFrom(cart);
-        const printed: string = new ReceiptPrinter(40).printReceipt(receipt);
+        const receiptPrinterFactory: ReceiptPrinterFactory = ReceiptPrinterFactory.createNew();
+        const receiptPrinter: ReceiptPrinter = receiptPrinterFactory.createReceiptPrinter(ReceiptPrinterType.Text);
+        const printed: string = receiptPrinter.printReceipt(receipt);
 
         // ASSERT
         const lines = printed.split(/\r?\n/);
