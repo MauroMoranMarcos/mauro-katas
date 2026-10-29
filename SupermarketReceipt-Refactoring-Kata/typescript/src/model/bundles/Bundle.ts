@@ -1,5 +1,5 @@
+import { ProductQuantities } from "../CommonTypes";
 import { Discount } from "../Discount"
-import { ProductQuantity } from "../ProductQuantity";
 import { SupermarketCatalog } from "../SupermarketCatalog";
 
 export interface Bundle {
