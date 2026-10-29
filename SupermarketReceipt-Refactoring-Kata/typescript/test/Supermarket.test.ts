@@ -4,7 +4,7 @@ import {SupermarketCatalog} from "../src/model/SupermarketCatalog"
 import {Receipt} from "../src/model/Receipt"
 import {ShoppingCart} from "../src/model/ShoppingCart"
 import {Teller} from "../src/model/Teller"
-import {ReceiptPrinter} from "../src/model/receiptPrinter/ReceiptPrinter"
+import {ReceiptPrinter} from "../src/model/receiptRenderer/ReceiptPrinter"
 import {SpecialOfferType} from "../src/model/offers/SpecialOfferType"
 import {BundleType} from "../src/model/bundles/BundleType"
 import {ProductUnit} from "../src/model/ProductUnit"
@@ -12,8 +12,8 @@ import {ProductQuantity} from "../src/model/ProductQuantity"
 import {assert} from "chai";
 import { it } from "node:test"
 import { describe } from "node:test"
-import { ReceiptType } from "../src/model/receiptPrinter/ReceiptType";
-import { ReceiptRendererFactory } from "../src/model/receiptPrinter/ReceiptRendererFactory"
+import { ReceiptType } from "../src/model/receiptRenderer/ReceiptType";
+import { ReceiptRendererFactory } from "../src/model/receiptRenderer/ReceiptRendererFactory"
 import { OfferFactory } from "../src/model/offers/OfferFactory"
 import { BundleFactory } from "../src/model/bundles/BundleFactory"
 
