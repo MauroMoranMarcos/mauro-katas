@@ -14,6 +14,8 @@ import { it } from "node:test"
 import { describe } from "node:test"
 import { ReceiptType } from "../src/model/receiptPrinter/ReceiptType";
 import { ReceiptRendererFactory } from "../src/model/receiptPrinter/ReceiptRendererFactory"
+import { OfferFactory } from "../src/model/offers/OfferFactory"
+import { BundleFactory } from "../src/model/bundles/BundleFactory"
 
 describe('Supermarket individual discounts', () => {
     it('Ten percent discount each', () => {
@@ -24,7 +26,7 @@ describe('Supermarket individual discounts', () => {
         const apples: Product = new Product("apples", ProductUnit.Kilo);
         catalog.addProduct(apples, 1.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, toothbrush, 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -52,7 +54,7 @@ describe('Supermarket individual discounts', () => {
         const bananas: Product = new Product("bananas", ProductUnit.Kilo);
         catalog.addProduct(bananas, 2.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -80,7 +82,7 @@ describe('Supermarket individual discounts', () => {
         const avocados: Product = new Product("avocados", ProductUnit.Kilo);
         catalog.addProduct(avocados, 4.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.TwoForAmount, yogourt, 0.75);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -108,7 +110,7 @@ describe('Supermarket individual discounts', () => {
         const potatoes: Product = new Product("potatoes", ProductUnit.Kilo);
         catalog.addProduct(potatoes, 1.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -136,7 +138,7 @@ describe('Supermarket individual discounts', () => {
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.79);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -160,7 +162,7 @@ describe('Supermarket individual discounts', () => {
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.79);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -183,7 +185,7 @@ describe('Supermarket individual discounts', () => {
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.79);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -207,7 +209,7 @@ describe('Supermarket individual discounts', () => {
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.79);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -232,7 +234,7 @@ describe('Supermarket individual discounts', () => {
         const bread: Product = new Product("bread", ProductUnit.Each);
         catalog.addProduct(bread, 1.50);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(apples, 0.5), new ProductQuantity(bread, 1)], 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -259,7 +261,7 @@ describe('Supermarket combined discounts', () => {
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, toothbrush, 10.0);
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothpaste, 0);
 
@@ -294,7 +296,7 @@ describe('Supermarket combined discounts', () => {
         const donut: Product = new Product("donut", ProductUnit.Each);
         catalog.addProduct(donut, 0.39);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
         teller.addSpecialOffer(SpecialOfferType.TwoForAmount, donut, 0.50);
 
@@ -330,7 +332,7 @@ describe('Supermarket combined discounts', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 0.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
         teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, toothbrush, 10.0);
 
@@ -366,7 +368,7 @@ describe('Supermarket combined discounts', () => {
         const tablecloth: Product = new Product("tablecloth", ProductUnit.Each);
         catalog.addProduct(tablecloth, 9.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
         teller.addSpecialOffer(SpecialOfferType.TwoForAmount, tablecloth, 15.0);
 
@@ -404,7 +406,7 @@ describe('Supermarket combined discounts', () => {
         const cookie: Product = new Product("cookie", ProductUnit.Each);
         catalog.addProduct(cookie, 0.89);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, cookie, 0);
 
@@ -434,7 +436,7 @@ describe('Supermarket combined discounts', () => {
         const apples: Product = new Product("apples", ProductUnit.Kilo);
         catalog.addProduct(apples, 1.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
         teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, apples, 10.0);
@@ -466,7 +468,7 @@ describe('Supermarket combined discounts', () => {
         const conditioner: Product = new Product("conditioner", ProductUnit.Each);
         catalog.addProduct(conditioner, 4.00);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(shampoo, 1), new ProductQuantity(conditioner, 1)], 20.0);
 
@@ -494,7 +496,7 @@ describe('Supermarket combined discounts', () => {
         const toothpaste: Product = new Product("toothpaste", ProductUnit.Each);
         catalog.addProduct(toothpaste, 1.79);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
         teller.addBundle(BundleType.XPercentDiscount, [new ProductQuantity(toothbrush, 1), new ProductQuantity(toothpaste, 2)], 10.0);
 
@@ -521,7 +523,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const yogourt: Product = new Product("yogourt", ProductUnit.Each);
         catalog.addProduct(yogourt, 0.50);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.TwoForAmount, yogourt, 0.75);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -542,7 +544,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const yogourt: Product = new Product("yogourt", ProductUnit.Each);
         catalog.addProduct(yogourt, 0.50);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.TwoForAmount, yogourt, 0.75);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -562,7 +564,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 0.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -582,7 +584,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 0.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -603,7 +605,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const cookie: Product = new Product("cookie", ProductUnit.Each);
         catalog.addProduct(cookie, 0.89);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -623,7 +625,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const cookie: Product = new Product("cookie", ProductUnit.Each);
         catalog.addProduct(cookie, 0.89);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -643,7 +645,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const apples: Product = new Product("apples", ProductUnit.Kilo);
         catalog.addProduct(apples, 1.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, apples, 10.0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -664,7 +666,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 0.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -686,7 +688,7 @@ describe('Supermarket offer thresholds and quantities', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 1.00);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
         teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, toothbrush, 20.0);
 
@@ -705,7 +707,7 @@ describe('Supermarket offer thresholds and quantities', () => {
     it('Empty cart produces an empty receipt', () => {
         // ARRANGE
         const catalog: SupermarketCatalog = new FakeCatalog();
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         const cart: ShoppingCart = new ShoppingCart();
 
         // ACT
@@ -733,7 +735,7 @@ describe('Supermarket several offers in the same cart', () => {
         const rice: Product = new Product("rice", ProductUnit.Each);
         catalog.addProduct(rice, 1.50);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
         teller.addSpecialOffer(SpecialOfferType.TwoForAmount, yogourt, 0.75);
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, cookie, 3.00);
@@ -766,7 +768,7 @@ describe('Supermarket receipt printer', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 0.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -801,7 +803,7 @@ describe('Supermarket receipt printer', () => {
         const toothbrush: Product = new Product("toothbrush", ProductUnit.Each);
         catalog.addProduct(toothbrush, 0.99);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
         teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, 0);
 
         const cart: ShoppingCart = new ShoppingCart();
@@ -835,7 +837,7 @@ describe('Supermarket receipt printer', () => {
         const rice: Product = new Product("rice", ProductUnit.Each);
         catalog.addProduct(rice, 1.50);
 
-        const teller: Teller = new Teller(catalog);
+        const teller: Teller = new Teller(catalog, OfferFactory.createNew(), BundleFactory.createNew());
 
         const cart: ShoppingCart = new ShoppingCart();
         cart.addItemQuantity(rice, 1);

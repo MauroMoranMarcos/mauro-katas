@@ -10,12 +10,14 @@ import { BundleType } from './bundles/BundleType';
 
 export class Teller {
 
-    private offerFactory: OfferFactory = OfferFactory.createNew();
-    private bundleFactory: BundleFactory = BundleFactory.createNew();
+    private offerFactory: OfferFactory;
+    private bundleFactory: BundleFactory;
     private offers: OffersByProduct = {};
     private bundles: Bundles = [];
 
-    public constructor(private readonly catalog: SupermarketCatalog) {
+    public constructor(private readonly catalog: SupermarketCatalog, offerFactory: OfferFactory, bundleFactory: BundleFactory) {
+        this.offerFactory = offerFactory;
+        this.bundleFactory = bundleFactory;
     }
 
     public addSpecialOffer(offerType: SpecialOfferType, product: Product, argument: number): void {
