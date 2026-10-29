@@ -1,7 +1,6 @@
 import {Receipt} from "../Receipt"
-import {ReceiptItem} from "../ReceiptItem"
-import {ProductUnit} from "../ProductUnit"
 import {ReceiptPrinter} from "./ReceiptPrinter"
+import {format2Decimals, presentQuantity} from "./ReceiptFormatting"
 import process from "process";
 
 export class TextReceiptPrinter implements ReceiptPrinter {
@@ -25,9 +24,9 @@ export class TextReceiptPrinter implements ReceiptPrinter {
     private addItemsLines(result: string, receipt: Receipt): string {
         receipt.getItems().forEach(item => {
             let name = item.product.name;
-            let price = this.format2Decimals(item.totalPrice);
-            let unitPrice = this.format2Decimals(item.price);
-            let quantity = this.presentQuantity(item);
+            let price = format2Decimals(item.totalPrice);
+            let unitPrice = format2Decimals(item.price);
+            let quantity = presentQuantity(item);
     
             let whitespaceSize = this.columns - name.length - price.length;
             let line = name + this.getWhitespace(whitespaceSize) + price + this.EOL;
@@ -45,7 +44,7 @@ export class TextReceiptPrinter implements ReceiptPrinter {
         receipt.getDiscounts().forEach(discount => {
             let productPresentation = discount.product.name;
             let description = discount.description;
-            let pricePresentation = this.format2Decimals(discount.discountAmount);
+            let pricePresentation = format2Decimals(discount.discountAmount);
             result += description;
             result += "(";
             result += productPresentation;
@@ -60,7 +59,7 @@ export class TextReceiptPrinter implements ReceiptPrinter {
     }
 
     private addFinalResultLines(result: string, receipt: Receipt): string {
-        let pricePresentation = this.format2Decimals(receipt.getTotalPrice());
+        let pricePresentation = format2Decimals(receipt.getTotalPrice());
         let total = "Total: ";
         let whitespace = this.getWhitespace(this.columns - total.length - pricePresentation.length);
 
@@ -70,20 +69,6 @@ export class TextReceiptPrinter implements ReceiptPrinter {
         result += pricePresentation;
 
         return result;
-    }
-
-    private format2Decimals(number: number) {
-        return new Intl.NumberFormat('en-UK', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }).format(number)
-    }
-
-    private presentQuantity( item: ReceiptItem): string  {
-        return ProductUnit.Each == item.product.unit
-            // TODO make sure this is the simplest way to make something similar to the java version
-                ? new Intl.NumberFormat('en-UK', {maximumFractionDigits: 0}).format(item.quantity)
-                : new Intl.NumberFormat('en-UK', {minimumFractionDigits: 3}).format(item.quantity);
     }
 
     private getWhitespace(whitespaceSize: number): string {
